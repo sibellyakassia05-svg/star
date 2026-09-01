@@ -1,0 +1,3511 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        🌌 Universo das Constelações
+    </title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+
+            width: 100%;
+            height: 100%;
+
+            margin: 0;
+            padding: 0;
+
+            overflow: hidden;
+
+            background: #01020b;
+
+            font-family:
+                "Segoe UI",
+                Arial,
+                sans-serif;
+        }
+
+        body {
+            user-select: none;
+        }
+
+        canvas {
+            display: block;
+        }
+
+
+        /* =====================================================
+           PAINEL
+        ===================================================== */
+
+        #ui {
+
+            position: fixed;
+
+            top: 22px;
+            left: 22px;
+
+            z-index: 50;
+
+            width: 335px;
+
+            padding: 22px;
+
+            border-radius: 22px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(5, 8, 30, 0.90),
+                    rgba(28, 8, 52, 0.76)
+                );
+
+            border:
+                1px solid
+                rgba(180, 195, 255, 0.20);
+
+            backdrop-filter:
+                blur(18px);
+
+            box-shadow:
+                0 0 50px
+                rgba(80, 100, 255, 0.15),
+
+                inset 0 0 30px
+                rgba(255,255,255,0.025);
+
+            color: white;
+
+            pointer-events: none;
+        }
+
+
+        #ui h1 {
+
+            margin: 0;
+
+            font-size: 21px;
+
+            letter-spacing: 4px;
+
+            font-weight: 700;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #ffffff,
+                    #8ee7ff,
+                    #b48cff,
+                    #ff9de2
+                );
+
+            background-clip: text;
+
+            -webkit-background-clip: text;
+
+            color: transparent;
+
+            -webkit-text-fill-color:
+                transparent;
+        }
+
+
+        .subtitle {
+
+            margin-top: 7px;
+
+            color: #8993bd;
+
+            font-size: 9px;
+
+            letter-spacing: 3px;
+        }
+
+
+        .separator {
+
+            height: 1px;
+
+            margin: 17px 0;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(180,200,255,0.25),
+                    transparent
+                );
+        }
+
+
+        .info {
+
+            color: #d0d6ef;
+
+            font-size: 11px;
+
+            line-height: 1.9;
+        }
+
+
+        .feature {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            margin: 3px 0;
+        }
+
+
+        .dot {
+
+            width: 6px;
+            height: 6px;
+
+            flex-shrink: 0;
+
+            border-radius: 50%;
+
+            background: #a6dcff;
+
+            box-shadow:
+                0 0 10px
+                #72cfff;
+        }
+
+
+        .gold {
+            color: #ffe29b;
+        }
+
+        .cyan {
+            color: #8defff;
+        }
+
+        .purple {
+            color: #d4a1ff;
+        }
+
+        .pink {
+            color: #ffaddf;
+        }
+
+
+        /* =====================================================
+           STATUS
+        ===================================================== */
+
+        #status {
+
+            position: fixed;
+
+            top: 22px;
+            right: 22px;
+
+            z-index: 50;
+
+            width: 235px;
+
+            padding: 15px 17px;
+
+            border-radius: 16px;
+
+            background:
+                rgba(4,7,25,0.68);
+
+            border:
+                1px solid
+                rgba(170,190,255,0.15);
+
+            backdrop-filter:
+                blur(15px);
+
+            color: #c3cceb;
+
+            font-size: 10px;
+
+            line-height: 1.9;
+
+            pointer-events: none;
+        }
+
+
+        .status-title {
+
+            color: white;
+
+            font-size: 10px;
+
+            letter-spacing: 2px;
+
+            margin-bottom: 4px;
+        }
+
+
+        #target {
+            color: #9ce4ff;
+            font-weight: 600;
+        }
+
+
+        /* =====================================================
+           BOTÕES
+        ===================================================== */
+
+        #controls {
+
+            position: fixed;
+
+            right: 22px;
+            bottom: 22px;
+
+            z-index: 80;
+
+            display: flex;
+
+            flex-wrap: wrap;
+
+            justify-content: flex-end;
+
+            gap: 8px;
+
+            max-width: 480px;
+        }
+
+
+        button {
+
+            border: 1px solid
+                rgba(180,195,255,0.20);
+
+            border-radius: 11px;
+
+            padding:
+                10px 14px;
+
+            color: #e0e7ff;
+
+            background:
+                rgba(7,11,33,0.88);
+
+            font-size: 10px;
+
+            letter-spacing: 0.5px;
+
+            cursor: pointer;
+
+            backdrop-filter:
+                blur(10px);
+
+            transition:
+                0.2s ease;
+        }
+
+
+        button:hover {
+
+            transform:
+                translateY(-2px);
+
+            background:
+                rgba(45,52,95,0.95);
+
+            box-shadow:
+                0 0 22px
+                rgba(115,145,255,0.28);
+        }
+
+
+        button.active {
+
+            background:
+                rgba(85,68,155,0.80);
+
+            border-color:
+                rgba(195,180,255,0.45);
+
+            box-shadow:
+                0 0 22px
+                rgba(160,130,255,0.30);
+        }
+
+
+        /* =====================================================
+           TEXTO INFERIOR
+        ===================================================== */
+
+        #bottom {
+
+            position: fixed;
+
+            left: 50%;
+            bottom: 24px;
+
+            transform:
+                translateX(-50%);
+
+            z-index: 20;
+
+            color:
+                rgba(220,230,255,0.52);
+
+            font-size: 9px;
+
+            letter-spacing: 4px;
+
+            white-space: nowrap;
+
+            pointer-events: none;
+
+            text-shadow:
+                0 0 15px
+                rgba(110,150,255,0.8);
+        }
+
+
+        /* =====================================================
+           CONSTELAÇÃO
+        ===================================================== */
+
+        #constellationInfo {
+
+            position: fixed;
+
+            left: 50%;
+            top: 50%;
+
+            transform:
+                translate(-50%,-50%)
+                scale(0.75);
+
+            z-index: 100;
+
+            opacity: 0;
+
+            pointer-events: none;
+
+            padding:
+                14px 25px;
+
+            border-radius: 30px;
+
+            border:
+                1px solid
+                rgba(180,210,255,0.30);
+
+            background:
+                rgba(5,8,25,0.78);
+
+            backdrop-filter:
+                blur(12px);
+
+            color: white;
+
+            font-size: 12px;
+
+            letter-spacing: 3px;
+
+            box-shadow:
+                0 0 40px
+                rgba(90,150,255,0.30);
+
+            transition:
+                0.3s ease;
+        }
+
+
+        #constellationInfo.show {
+
+            opacity: 1;
+
+            transform:
+                translate(-50%,-50%)
+                scale(1);
+        }
+
+
+        /* =====================================================
+           LOADING
+        ===================================================== */
+
+        #loading {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 200;
+
+            display: flex;
+
+            flex-direction: column;
+
+            justify-content: center;
+
+            align-items: center;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    #11183c,
+                    #02030d 55%,
+                    #000108
+                );
+
+            color: white;
+
+            font-size: 11px;
+
+            letter-spacing: 6px;
+
+            transition:
+                opacity 1s ease;
+        }
+
+
+        #loadingBar {
+
+            width: 190px;
+
+            height: 2px;
+
+            margin-top: 18px;
+
+            overflow: hidden;
+
+            background:
+                rgba(255,255,255,0.08);
+        }
+
+
+        #loadingProgress {
+
+            width: 0%;
+
+            height: 100%;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #6bbfff,
+                    #b27cff,
+                    #ff8dd9
+                );
+
+            box-shadow:
+                0 0 15px
+                #8c8cff;
+
+            transition:
+                width 1s ease;
+        }
+
+
+        #loading.hidden {
+
+            opacity: 0;
+
+            pointer-events: none;
+        }
+
+
+        /* =====================================================
+           MOBILE
+        ===================================================== */
+
+        @media (max-width: 700px) {
+
+            #ui {
+
+                top: 12px;
+                left: 12px;
+
+                width: 280px;
+
+                padding: 16px;
+            }
+
+
+            #ui h1 {
+                font-size: 15px;
+            }
+
+
+            #status {
+                display: none;
+            }
+
+
+            #controls {
+
+                left: 10px;
+                right: 10px;
+
+                bottom: 10px;
+
+                justify-content: center;
+
+                max-width: none;
+            }
+
+
+            #bottom {
+                display: none;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         LOADING
+    ===================================================== -->
+
+    <div id="loading">
+
+        <div>
+            DESPERTANDO O CÉU...
+        </div>
+
+        <div id="loadingBar">
+
+            <div id="loadingProgress"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         PAINEL
+    ===================================================== -->
+
+    <div id="ui">
+
+        <h1>
+            🌌 COSMIC ATLAS
+        </h1>
+
+        <div class="subtitle">
+            OBSERVATÓRIO INTERESTELAR
+        </div>
+
+        <div class="separator"></div>
+
+        <div class="info">
+
+            <div class="feature">
+                <span class="dot"></span>
+                Arraste para explorar
+            </div>
+
+            <div class="feature">
+                <span class="dot"></span>
+                Scroll para aproximar
+            </div>
+
+            <div class="feature">
+                <span class="dot"></span>
+                Observe o universo se mover
+            </div>
+
+            <br>
+
+            <div class="gold">
+                ★ TRÊS MARIAS — ÓRION
+            </div>
+
+            <div class="cyan">
+                ★ URSA MAIOR — GRANDE CARRO
+            </div>
+
+            <div class="purple">
+                ★ 12 CONSTELAÇÕES DO ZODÍACO
+            </div>
+
+            <div class="pink">
+                ★ NEBULOSAS E METEOROS
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         STATUS
+    ===================================================== -->
+
+    <div id="status">
+
+        <div class="status-title">
+            🔭 OBSERVATÓRIO
+        </div>
+
+        ALVO:
+        <span id="target">
+            CÉU PROFUNDO
+        </span>
+
+        <br>
+
+        DISTÂNCIA:
+        <span id="distance">
+            13.0
+        </span>
+
+        <br>
+
+        VELOCIDADE:
+        <span id="speed">
+            0.35
+        </span>
+
+        <br>
+
+        SISTEMA:
+        <span id="system">
+            ROTAÇÃO AUTOMÁTICA
+        </span>
+
+    </div>
+
+
+    <!-- =====================================================
+         AVISO
+    ===================================================== -->
+
+    <div id="constellationInfo">
+        ★ CÉU PROFUNDO
+    </div>
+
+
+    <!-- =====================================================
+         BOTÕES
+    ===================================================== -->
+
+    <div id="controls">
+
+        <button id="orion">
+            ★ ÓRION
+        </button>
+
+        <button id="ursa">
+            🐻 URSA MAIOR
+        </button>
+
+        <button id="zodiac">
+            ♈ ZODÍACO
+        </button>
+
+        <button id="toggleGalaxy">
+            🌌 GALÁXIA
+        </button>
+
+        <button id="toggleMeteor">
+            🌠 METEOROS
+        </button>
+
+        <button id="auto">
+            🔄 AUTO
+        </button>
+
+        <button id="reset">
+            🎯 CENTRALIZAR
+        </button>
+
+    </div>
+
+
+    <div id="bottom">
+        ✦ ARRASTE • EXPLORE • DESCUBRA ✦
+    </div>
+
+
+    <!-- =====================================================
+         THREE.JS
+    ===================================================== -->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+
+    <script>
+
+        /* =====================================================
+           VARIÁVEIS
+        ===================================================== */
+
+        let scene;
+        let camera;
+        let renderer;
+
+        let universe;
+
+        let galaxy;
+        let distantStars;
+
+        let constellationLayer;
+        let zodiacLayer;
+        let nebulaLayer;
+        let planetLayer;
+        let meteorLayer;
+
+        let zodiacRing;
+
+        let starObjects = [];
+        let zodiacObjects = [];
+        let meteors = [];
+
+        let clock =
+            new THREE.Clock();
+
+
+        /* =====================================================
+           CONTROLE
+        ===================================================== */
+
+        let mouseDown = false;
+
+        let lastX = 0;
+        let lastY = 0;
+
+        let targetX = 0.12;
+        let targetY = 0;
+
+        let rotationX = 0.12;
+        let rotationY = 0;
+
+        let velocityX = 0;
+        let velocityY = 0;
+
+        let autoRotate = true;
+
+        let galaxyVisible = true;
+        let meteorVisible = true;
+
+        let distance = 13;
+
+
+        /* =====================================================
+           INICIAR
+        ===================================================== */
+
+        function init() {
+
+            /* ===============================================
+               CENA
+            =============================================== */
+
+            scene =
+                new THREE.Scene();
+
+
+            scene.background =
+                new THREE.Color(
+                    0x01020b
+                );
+
+
+            scene.fog =
+                new THREE.FogExp2(
+                    0x05071c,
+                    0.009
+                );
+
+
+            /* ===============================================
+               CÂMERA
+            =============================================== */
+
+            camera =
+                new THREE.PerspectiveCamera(
+                    55,
+                    window.innerWidth /
+                    window.innerHeight,
+                    0.1,
+                    1000
+                );
+
+
+            camera.position.set(
+                0,
+                1,
+                distance
+            );
+
+
+            /* ===============================================
+               RENDERIZADOR
+            =============================================== */
+
+            renderer =
+                new THREE.WebGLRenderer({
+
+                    antialias: true,
+
+                    powerPreference:
+                        "high-performance"
+                });
+
+
+            renderer.setSize(
+                window.innerWidth,
+                window.innerHeight
+            );
+
+
+            renderer.setPixelRatio(
+                Math.min(
+                    window.devicePixelRatio,
+                    2
+                )
+            );
+
+
+            renderer.outputEncoding =
+                THREE.sRGBEncoding;
+
+
+            document.body.appendChild(
+                renderer.domElement
+            );
+
+
+            /* ===============================================
+               GRUPOS
+            =============================================== */
+
+            universe =
+                new THREE.Group();
+
+
+            constellationLayer =
+                new THREE.Group();
+
+
+            zodiacLayer =
+                new THREE.Group();
+
+
+            nebulaLayer =
+                new THREE.Group();
+
+
+            planetLayer =
+                new THREE.Group();
+
+
+            meteorLayer =
+                new THREE.Group();
+
+
+            universe.add(
+                constellationLayer
+            );
+
+
+            universe.add(
+                zodiacLayer
+            );
+
+
+            universe.add(
+                nebulaLayer
+            );
+
+
+            universe.add(
+                planetLayer
+            );
+
+
+            universe.add(
+                meteorLayer
+            );
+
+
+            scene.add(
+                universe
+            );
+
+
+            /* ===============================================
+               CRIAR UNIVERSO
+            =============================================== */
+
+            createGalaxy();
+
+            createDistantStars();
+
+            createNebulas();
+
+            createPlanets();
+
+            createOrion();
+
+            createUrsaMajor();
+
+            createZodiac();
+
+            createMeteorField();
+
+
+            /* ===============================================
+               EVENTOS
+            =============================================== */
+
+            window.addEventListener(
+                "resize",
+                resize
+            );
+
+
+            renderer.domElement.addEventListener(
+                "mousedown",
+                mouseDownHandler
+            );
+
+
+            window.addEventListener(
+                "mousemove",
+                mouseMoveHandler
+            );
+
+
+            window.addEventListener(
+                "mouseup",
+                mouseUpHandler
+            );
+
+
+            renderer.domElement.addEventListener(
+                "wheel",
+                wheelHandler,
+                {
+                    passive: true
+                }
+            );
+
+
+            setupButtons();
+
+
+            /* ===============================================
+               LOADING
+            =============================================== */
+
+            setTimeout(
+                () => {
+
+                    document
+                        .getElementById(
+                            "loadingProgress"
+                        )
+                        .style.width =
+                        "100%";
+
+                },
+                100
+            );
+
+
+            setTimeout(
+                () => {
+
+                    document
+                        .getElementById(
+                            "loading"
+                        )
+                        .classList.add(
+                            "hidden"
+                        );
+
+                },
+                1300
+            );
+
+
+            animate();
+        }
+
+
+        /* =====================================================
+           GALÁXIA
+        ===================================================== */
+
+        function createGalaxy() {
+
+            const count = 28000;
+
+            const positions =
+                new Float32Array(
+                    count * 3
+                );
+
+            const colors =
+                new Float32Array(
+                    count * 3
+                );
+
+
+            const center =
+                new THREE.Color(
+                    "#fff4d6"
+                );
+
+
+            const inner =
+                new THREE.Color(
+                    "#91e1ff"
+                );
+
+
+            const outer =
+                new THREE.Color(
+                    "#765cff"
+                );
+
+
+            for (
+                let i = 0;
+                i < count;
+                i++
+            ) {
+
+                const i3 =
+                    i * 3;
+
+
+                const radius =
+                    Math.pow(
+                        Math.random(),
+                        0.62
+                    ) * 20;
+
+
+                const arms = 7;
+
+
+                const arm =
+                    i % arms;
+
+
+                const armAngle =
+                    arm *
+                    (
+                        Math.PI * 2 /
+                        arms
+                    );
+
+
+                const spiral =
+                    radius * 0.48;
+
+
+                const spread =
+                    (
+                        Math.random() -
+                        0.5
+                    ) *
+                    (
+                        0.3 +
+                        radius * 0.07
+                    );
+
+
+                const angle =
+                    armAngle +
+                    spiral +
+                    spread;
+
+
+                positions[i3] =
+                    Math.cos(angle) *
+                    radius;
+
+
+                positions[i3 + 1] =
+                    (
+                        Math.random() -
+                        0.5
+                    ) *
+                    (
+                        0.5 +
+                        radius * 0.045
+                    );
+
+
+                positions[i3 + 2] =
+                    Math.sin(angle) *
+                    radius;
+
+
+                const t =
+                    radius / 20;
+
+
+                let color;
+
+
+                if (t < 0.35) {
+
+                    color =
+                        center.clone();
+
+
+                    color.lerp(
+                        inner,
+                        t / 0.35
+                    );
+
+                } else {
+
+                    color =
+                        inner.clone();
+
+
+                    color.lerp(
+                        outer,
+                        (
+                            t - 0.35
+                        ) / 0.65
+                    );
+                }
+
+
+                colors[i3] =
+                    color.r;
+
+                colors[i3 + 1] =
+                    color.g;
+
+                colors[i3 + 2] =
+                    color.b;
+            }
+
+
+            const geometry =
+                new THREE.BufferGeometry();
+
+
+            geometry.setAttribute(
+                "position",
+                new THREE.BufferAttribute(
+                    positions,
+                    3
+                )
+            );
+
+
+            geometry.setAttribute(
+                "color",
+                new THREE.BufferAttribute(
+                    colors,
+                    3
+                )
+            );
+
+
+            const material =
+                new THREE.PointsMaterial({
+
+                    size: 0.043,
+
+                    sizeAttenuation: true,
+
+                    vertexColors: true,
+
+                    transparent: true,
+
+                    opacity: 0.88,
+
+                    depthWrite: false,
+
+                    blending:
+                        THREE.AdditiveBlending
+                });
+
+
+            galaxy =
+                new THREE.Points(
+                    geometry,
+                    material
+                );
+
+
+            galaxy.rotation.x =
+                0.35;
+
+
+            universe.add(
+                galaxy
+            );
+        }
+
+
+        /* =====================================================
+           ESTRELAS DISTANTES
+        ===================================================== */
+
+        function createDistantStars() {
+
+            const count = 9000;
+
+            const positions =
+                new Float32Array(
+                    count * 3
+                );
+
+            const colors =
+                new Float32Array(
+                    count * 3
+                );
+
+
+            for (
+                let i = 0;
+                i < count;
+                i++
+            ) {
+
+                const i3 =
+                    i * 3;
+
+
+                const radius =
+                    35 +
+                    Math.random() * 100;
+
+
+                const theta =
+                    Math.random() *
+                    Math.PI * 2;
+
+
+                const phi =
+                    Math.acos(
+                        2 *
+                        Math.random() -
+                        1
+                    );
+
+
+                positions[i3] =
+                    radius *
+                    Math.sin(phi) *
+                    Math.cos(theta);
+
+
+                positions[i3 + 1] =
+                    radius *
+                    Math.cos(phi);
+
+
+                positions[i3 + 2] =
+                    radius *
+                    Math.sin(phi) *
+                    Math.sin(theta);
+
+
+                const color =
+                    new THREE.Color();
+
+
+                const value =
+                    Math.random();
+
+
+                if (value < 0.18) {
+
+                    color.set(
+                        "#ffd6a0"
+                    );
+
+                } else if (
+                    value < 0.48
+                ) {
+
+                    color.set(
+                        "#cce6ff"
+                    );
+
+                } else {
+
+                    color.set(
+                        "#ffffff"
+                    );
+                }
+
+
+                colors[i3] =
+                    color.r;
+
+                colors[i3 + 1] =
+                    color.g;
+
+                colors[i3 + 2] =
+                    color.b;
+            }
+
+
+            const geometry =
+                new THREE.BufferGeometry();
+
+
+            geometry.setAttribute(
+                "position",
+                new THREE.BufferAttribute(
+                    positions,
+                    3
+                )
+            );
+
+
+            geometry.setAttribute(
+                "color",
+                new THREE.BufferAttribute(
+                    colors,
+                    3
+                )
+            );
+
+
+            const material =
+                new THREE.PointsMaterial({
+
+                    size: 0.035,
+
+                    vertexColors: true,
+
+                    transparent: true,
+
+                    opacity: 0.75,
+
+                    depthWrite: false,
+
+                    blending:
+                        THREE.AdditiveBlending
+                });
+
+
+            distantStars =
+                new THREE.Points(
+                    geometry,
+                    material
+                );
+
+
+            universe.add(
+                distantStars
+            );
+        }
+
+
+        /* =====================================================
+           NEBULOSAS
+        ===================================================== */
+
+        function createNebulas() {
+
+            const nebulas = [
+
+                [-14, 4, -11, 0x713cff, 8],
+
+                [13, 6, -15, 0xff49c8, 7],
+
+                [4, -7, -20, 0x247cff, 9],
+
+                [-18, -5, -5, 0x38dfff, 6],
+
+                [17, -5, 7, 0x9c4cff, 7]
+
+            ];
+
+
+            nebulas.forEach(
+                (data, index) => {
+
+                    const geometry =
+                        new THREE.SphereGeometry(
+                            data[4],
+                            32,
+                            32
+                        );
+
+
+                    const material =
+                        new THREE.MeshBasicMaterial({
+
+                            color: data[3],
+
+                            transparent: true,
+
+                            opacity: 0.055,
+
+                            depthWrite: false,
+
+                            blending:
+                                THREE.AdditiveBlending
+                        });
+
+
+                    const mesh =
+                        new THREE.Mesh(
+                            geometry,
+                            material
+                        );
+
+
+                    mesh.position.set(
+                        data[0],
+                        data[1],
+                        data[2]
+                    );
+
+
+                    mesh.scale.set(
+                        1.7,
+                        0.55,
+                        1
+                    );
+
+
+                    mesh.userData.phase =
+                        index * 1.7;
+
+
+                    nebulaLayer.add(
+                        mesh
+                    );
+                }
+            );
+        }
+
+
+        /* =====================================================
+           PLANETAS
+        ===================================================== */
+
+        function createPlanets() {
+
+            createPlanet(
+                -15,
+                8,
+                -8,
+                1.1,
+                0x4b85ff,
+                true
+            );
+
+
+            createPlanet(
+                15,
+                -5,
+                -10,
+                0.8,
+                0xff68ca,
+                false
+            );
+
+
+            createPlanet(
+                -11,
+                -8,
+                -17,
+                0.55,
+                0x63ffe9,
+                false
+            );
+
+
+            createPlanet(
+                19,
+                8,
+                -15,
+                0.45,
+                0xffd76b,
+                true
+            );
+        }
+
+
+        function createPlanet(
+            x,
+            y,
+            z,
+            size,
+            color,
+            rings
+        ) {
+
+            const group =
+                new THREE.Group();
+
+
+            const planet =
+                new THREE.Mesh(
+
+                    new THREE.SphereGeometry(
+                        size,
+                        32,
+                        32
+                    ),
+
+                    new THREE.MeshBasicMaterial({
+                        color: color
+                    })
+                );
+
+
+            group.add(
+                planet
+            );
+
+
+            const glow =
+                new THREE.Mesh(
+
+                    new THREE.SphereGeometry(
+                        size * 1.9,
+                        20,
+                        20
+                    ),
+
+                    new THREE.MeshBasicMaterial({
+
+                        color: color,
+
+                        transparent: true,
+
+                        opacity: 0.09,
+
+                        depthWrite: false,
+
+                        blending:
+                            THREE.AdditiveBlending
+                    })
+                );
+
+
+            group.add(
+                glow
+            );
+
+
+            if (rings) {
+
+                const ring =
+                    new THREE.Mesh(
+
+                        new THREE.RingGeometry(
+                            size * 1.5,
+                            size * 2,
+                            64
+                        ),
+
+                        new THREE.MeshBasicMaterial({
+
+                            color: color,
+
+                            transparent: true,
+
+                            opacity: 0.35,
+
+                            side:
+                                THREE.DoubleSide
+                        })
+                    );
+
+
+                ring.rotation.x =
+                    Math.PI / 2.6;
+
+
+                group.add(
+                    ring
+                );
+            }
+
+
+            group.position.set(
+                x,
+                y,
+                z
+            );
+
+
+            group.userData.speed =
+                0.001 +
+                Math.random() * 0.002;
+
+
+            group.userData.originalY =
+                y;
+
+
+            planetLayer.add(
+                group
+            );
+        }
+
+
+        /* =====================================================
+           ESTRELA PRINCIPAL
+        ===================================================== */
+
+        function createMainStar(
+            position,
+            color,
+            size,
+            name
+        ) {
+
+            const group =
+                new THREE.Group();
+
+
+            const core =
+                new THREE.Mesh(
+
+                    new THREE.SphereGeometry(
+                        size,
+                        16,
+                        16
+                    ),
+
+                    new THREE.MeshBasicMaterial({
+                        color: color
+                    })
+                );
+
+
+            group.add(
+                core
+            );
+
+
+            const glow =
+                new THREE.Mesh(
+
+                    new THREE.SphereGeometry(
+                        size * 3.5,
+                        16,
+                        16
+                    ),
+
+                    new THREE.MeshBasicMaterial({
+
+                        color: color,
+
+                        transparent: true,
+
+                        opacity: 0.17,
+
+                        depthWrite: false,
+
+                        blending:
+                            THREE.AdditiveBlending
+                    })
+                );
+
+
+            group.add(
+                glow
+            );
+
+
+            const lineMaterial =
+                new THREE.LineBasicMaterial({
+
+                    color: color,
+
+                    transparent: true,
+
+                    opacity: 0.48,
+
+                    blending:
+                        THREE.AdditiveBlending
+                });
+
+
+            const h =
+                size * 5;
+
+
+            const horizontal =
+                new THREE.BufferGeometry()
+                    .setFromPoints([
+
+                        new THREE.Vector3(
+                            -h,
+                            0,
+                            0
+                        ),
+
+                        new THREE.Vector3(
+                            h,
+                            0,
+                            0
+                        )
+
+                    ]);
+
+
+            const vertical =
+                new THREE.BufferGeometry()
+                    .setFromPoints([
+
+                        new THREE.Vector3(
+                            0,
+                            -h,
+                            0
+                        ),
+
+                        new THREE.Vector3(
+                            0,
+                            h,
+                            0
+                        )
+
+                    ]);
+
+
+            group.add(
+                new THREE.Line(
+                    horizontal,
+                    lineMaterial
+                )
+            );
+
+
+            group.add(
+                new THREE.Line(
+                    vertical,
+                    lineMaterial
+                )
+            );
+
+
+            group.position.copy(
+                position
+            );
+
+
+            group.userData.name =
+                name;
+
+
+            group.userData.phase =
+                Math.random() * 10;
+
+
+            constellationLayer.add(
+                group
+            );
+
+
+            starObjects.push(
+                group
+            );
+
+
+            return group;
+        }
+
+
+        /* =====================================================
+           LIGAR ESTRELAS
+        ===================================================== */
+
+        function connectStars(
+            a,
+            b,
+            color,
+            opacity
+        ) {
+
+            const geometry =
+                new THREE.BufferGeometry()
+                    .setFromPoints([
+                        a,
+                        b
+                    ]);
+
+
+            const material =
+                new THREE.LineBasicMaterial({
+
+                    color: color,
+
+                    transparent: true,
+
+                    opacity: opacity,
+
+                    blending:
+                        THREE.AdditiveBlending
+                });
+
+
+            const line =
+                new THREE.Line(
+                    geometry,
+                    material
+                );
+
+
+            constellationLayer.add(
+                line
+            );
+
+
+            return line;
+        }
+
+
+        /* =====================================================
+           ÓRION
+        ===================================================== */
+
+        function createOrion() {
+
+            const s = {
+
+                betelgeuse:
+                    new THREE.Vector3(
+                        -3.8,
+                        4,
+                        -4
+                    ),
+
+                bellatrix:
+                    new THREE.Vector3(
+                        2.2,
+                        4.1,
+                        -4
+                    ),
+
+                mintaka:
+                    new THREE.Vector3(
+                        -0.7,
+                        1.8,
+                        -4
+                    ),
+
+                alnilam:
+                    new THREE.Vector3(
+                        0,
+                        2.05,
+                        -4
+                    ),
+
+                alnitak:
+                    new THREE.Vector3(
+                        0.8,
+                        2.3,
+                        -4
+                    ),
+
+                rigel:
+                    new THREE.Vector3(
+                        -2.3,
+                        -2.4,
+                        -4
+                    ),
+
+                saiph:
+                    new THREE.Vector3(
+                        2,
+                        -2.2,
+                        -4
+                    )
+            };
+
+
+            createMainStar(
+                s.betelgeuse,
+                0xff735c,
+                0.27,
+                "Betelgeuse"
+            );
+
+
+            createMainStar(
+                s.bellatrix,
+                0xbad8ff,
+                0.15,
+                "Bellatrix"
+            );
+
+
+            createMainStar(
+                s.mintaka,
+                0xffe5a4,
+                0.20,
+                "Mintaka"
+            );
+
+
+            createMainStar(
+                s.alnilam,
+                0xffefbd,
+                0.23,
+                "Alnilam"
+            );
+
+
+            createMainStar(
+                s.alnitak,
+                0xffe39a,
+                0.20,
+                "Alnitak"
+            );
+
+
+            createMainStar(
+                s.rigel,
+                0x8fc8ff,
+                0.25,
+                "Rigel"
+            );
+
+
+            createMainStar(
+                s.saiph,
+                0x9dcaff,
+                0.18,
+                "Saiph"
+            );
+
+
+            const links = [
+
+                ["betelgeuse","bellatrix"],
+
+                ["betelgeuse","mintaka"],
+
+                ["bellatrix","alnitak"],
+
+                ["mintaka","alnilam"],
+
+                ["alnilam","alnitak"],
+
+                ["mintaka","rigel"],
+
+                ["alnitak","saiph"],
+
+                ["rigel","saiph"]
+
+            ];
+
+
+            links.forEach(
+                pair => {
+
+                    connectStars(
+                        s[pair[0]],
+                        s[pair[1]],
+                        0xffd98a,
+                        0.65
+                    );
+                }
+            );
+
+
+            createLabel(
+                "★ TRÊS MARIAS",
+                new THREE.Vector3(
+                    0,
+                    3.25,
+                    -4
+                ),
+                "#ffe49c",
+                0.65
+            );
+
+
+            createLabel(
+                "ÓRION",
+                new THREE.Vector3(
+                    -0.8,
+                    5.6,
+                    -4
+                ),
+                "#ffffff",
+                0.55
+            );
+        }
+
+
+        /* =====================================================
+           URSA MAIOR
+        ===================================================== */
+
+        function createUrsaMajor() {
+
+            const s = {
+
+                dubhe:
+                    new THREE.Vector3(
+                        -8,
+                        7,
+                        -5
+                    ),
+
+                merak:
+                    new THREE.Vector3(
+                        -6.2,
+                        5.8,
+                        -5
+                    ),
+
+                phecda:
+                    new THREE.Vector3(
+                        -6,
+                        4.2,
+                        -5
+                    ),
+
+                megrez:
+                    new THREE.Vector3(
+                        -7.8,
+                        4.4,
+                        -5
+                    ),
+
+                alioth:
+                    new THREE.Vector3(
+                        -9.3,
+                        3.7,
+                        -5
+                    ),
+
+                mizar:
+                    new THREE.Vector3(
+                        -10.8,
+                        2.5,
+                        -5
+                    ),
+
+                alkaid:
+                    new THREE.Vector3(
+                        -12.5,
+                        1.1,
+                        -5
+                    )
+            };
+
+
+            Object.entries(s)
+                .forEach(
+                    ([name,pos]) => {
+
+                        createMainStar(
+                            pos,
+                            0x9bc9ff,
+                            0.18,
+                            name
+                        );
+                    }
+                );
+
+
+            const links = [
+
+                ["dubhe","merak"],
+
+                ["merak","phecda"],
+
+                ["phecda","megrez"],
+
+                ["megrez","dubhe"],
+
+                ["megrez","alioth"],
+
+                ["alioth","mizar"],
+
+                ["mizar","alkaid"]
+
+            ];
+
+
+            links.forEach(
+                pair => {
+
+                    connectStars(
+                        s[pair[0]],
+                        s[pair[1]],
+                        0x78b7ff,
+                        0.7
+                    );
+                }
+            );
+
+
+            createLabel(
+                "★ URSA MAIOR",
+                new THREE.Vector3(
+                    -8,
+                    8.4,
+                    -5
+                ),
+                "#a7d3ff",
+                0.63
+            );
+
+
+            createLabel(
+                "GRANDE CARRO",
+                new THREE.Vector3(
+                    -9,
+                    0,
+                    -5
+                ),
+                "#7daeff",
+                0.42
+            );
+        }
+
+
+        /* =====================================================
+           ZODÍACO
+        ===================================================== */
+
+        function createZodiac() {
+
+            const signs = [
+
+                "♈ ÁRIES",
+                "♉ TOURO",
+                "♊ GÊMEOS",
+                "♋ CÂNCER",
+                "♌ LEÃO",
+                "♍ VIRGEM",
+                "♎ LIBRA",
+                "♏ ESCORPIÃO",
+                "♐ SAGITÁRIO",
+                "♑ CAPRICÓRNIO",
+                "♒ AQUÁRIO",
+                "♓ PEIXES"
+
+            ];
+
+
+            const radius = 18;
+
+
+            signs.forEach(
+                (name,index) => {
+
+                    const angle =
+                        (
+                            index /
+                            signs.length
+                        ) *
+                        Math.PI *
+                        2;
+
+
+                    const x =
+                        Math.cos(angle) *
+                        radius;
+
+
+                    const z =
+                        Math.sin(angle) *
+                        radius;
+
+
+                    const y =
+                        Math.sin(
+                            angle * 2
+                        ) * 3;
+
+
+                    const group =
+                        new THREE.Group();
+
+
+                    group.position.set(
+                        x,
+                        y,
+                        z
+                    );
+
+
+                    const points = [];
+
+
+                    const count =
+                        5 +
+                        (
+                            index % 4
+                        );
+
+
+                    for (
+                        let i = 0;
+                        i < count;
+                        i++
+                    ) {
+
+                        const a =
+                            (
+                                i / count
+                            ) *
+                            Math.PI * 2;
+
+
+                        const r =
+                            0.5 +
+                            Math.random() *
+                            0.9;
+
+
+                        points.push(
+
+                            new THREE.Vector3(
+
+                                Math.cos(a) * r,
+
+                                (
+                                    Math.random() -
+                                    0.5
+                                ) * 0.7,
+
+                                Math.sin(a) * r
+
+                            )
+                        );
+                    }
+
+
+                    for (
+                        let i = 0;
+                        i < points.length;
+                        i++
+                    ) {
+
+                        const star =
+                            new THREE.Mesh(
+
+                                new THREE.SphereGeometry(
+                                    0.07,
+                                    8,
+                                    8
+                                ),
+
+                                new THREE.MeshBasicMaterial({
+                                    color: 0xcaa2ff
+                                })
+                            );
+
+
+                        star.position.copy(
+                            points[i]
+                        );
+
+
+                        group.add(
+                            star
+                        );
+
+
+                        const next =
+                            points[
+                                (
+                                    i + 1
+                                ) %
+                                points.length
+                            ];
+
+
+                        const lineGeometry =
+                            new THREE.BufferGeometry()
+                                .setFromPoints([
+                                    points[i],
+                                    next
+                                ]);
+
+
+                        const lineMaterial =
+                            new THREE.LineBasicMaterial({
+
+                                color: 0xb88cff,
+
+                                transparent: true,
+
+                                opacity: 0.3,
+
+                                blending:
+                                    THREE.AdditiveBlending
+                            });
+
+
+                        group.add(
+
+                            new THREE.Line(
+                                lineGeometry,
+                                lineMaterial
+                            )
+                        );
+                    }
+
+
+                    group.userData.phase =
+                        index * 0.8;
+
+
+                    zodiacLayer.add(
+                        group
+                    );
+
+
+                    zodiacObjects.push(
+                        group
+                    );
+
+
+                    createLabel(
+                        name,
+                        new THREE.Vector3(
+                            x,
+                            y + 1.9,
+                            z
+                        ),
+                        "#d5a7ff",
+                        0.34,
+                        zodiacLayer
+                    );
+                }
+            );
+
+
+            const ringPoints = [];
+
+
+            for (
+                let i = 0;
+                i <= 240;
+                i++
+            ) {
+
+                const angle =
+                    (
+                        i / 240
+                    ) *
+                    Math.PI * 2;
+
+
+                ringPoints.push(
+
+                    new THREE.Vector3(
+
+                        Math.cos(angle) *
+                        radius,
+
+                        0,
+
+                        Math.sin(angle) *
+                        radius
+
+                    )
+                );
+            }
+
+
+            const ringGeometry =
+                new THREE.BufferGeometry()
+                    .setFromPoints(
+                        ringPoints
+                    );
+
+
+            const ringMaterial =
+                new THREE.LineBasicMaterial({
+
+                    color: 0xb17cff,
+
+                    transparent: true,
+
+                    opacity: 0.16,
+
+                    blending:
+                        THREE.AdditiveBlending
+                });
+
+
+            zodiacRing =
+                new THREE.Line(
+                    ringGeometry,
+                    ringMaterial
+                );
+
+
+            zodiacLayer.add(
+                zodiacRing
+            );
+        }
+
+
+        /* =====================================================
+           LABELS
+        ===================================================== */
+
+        function createLabel(
+            text,
+            position,
+            color,
+            scale,
+            parent = constellationLayer
+        ) {
+
+            const canvas =
+                document.createElement(
+                    "canvas"
+                );
+
+
+            canvas.width = 700;
+            canvas.height = 160;
+
+
+            const ctx =
+                canvas.getContext(
+                    "2d"
+                );
+
+
+            ctx.clearRect(
+                0,
+                0,
+                canvas.width,
+                canvas.height
+            );
+
+
+            ctx.font =
+                "bold 38px Segoe UI";
+
+
+            ctx.textAlign =
+                "center";
+
+
+            ctx.textBaseline =
+                "middle";
+
+
+            ctx.shadowColor =
+                color;
+
+
+            ctx.shadowBlur =
+                20;
+
+
+            ctx.fillStyle =
+                color;
+
+
+            ctx.fillText(
+                text,
+                350,
+                80
+            );
+
+
+            const texture =
+                new THREE.CanvasTexture(
+                    canvas
+                );
+
+
+            texture.needsUpdate =
+                true;
+
+
+            const material =
+                new THREE.SpriteMaterial({
+
+                    map: texture,
+
+                    transparent: true,
+
+                    depthWrite: false
+                });
+
+
+            const sprite =
+                new THREE.Sprite(
+                    material
+                );
+
+
+            sprite.position.copy(
+                position
+            );
+
+
+            sprite.scale.set(
+                3.7 * scale,
+                0.85 * scale,
+                1
+            );
+
+
+            parent.add(
+                sprite
+            );
+
+
+            return sprite;
+        }
+
+
+        /* =====================================================
+           METEOROS
+        ===================================================== */
+
+        function createMeteorField() {
+
+            for (
+                let i = 0;
+                i < 16;
+                i++
+            ) {
+
+                const meteor =
+                    new THREE.Group();
+
+
+                const head =
+                    new THREE.Mesh(
+
+                        new THREE.SphereGeometry(
+                            0.07,
+                            8,
+                            8
+                        ),
+
+                        new THREE.MeshBasicMaterial({
+                            color: 0xffffff
+                        })
+                    );
+
+
+                meteor.add(
+                    head
+                );
+
+
+                const trailGeometry =
+                    new THREE.BufferGeometry()
+                        .setFromPoints([
+
+                            new THREE.Vector3(
+                                0,
+                                0,
+                                0
+                            ),
+
+                            new THREE.Vector3(
+                                -3.5,
+                                1.8,
+                                0
+                            )
+
+                        ]);
+
+
+                const trailMaterial =
+                    new THREE.LineBasicMaterial({
+
+                        color: 0x9edfff,
+
+                        transparent: true,
+
+                        opacity: 0.65,
+
+                        blending:
+                            THREE.AdditiveBlending
+                    });
+
+
+                meteor.add(
+
+                    new THREE.Line(
+                        trailGeometry,
+                        trailMaterial
+                    )
+                );
+
+
+                resetMeteor(
+                    meteor,
+                    true
+                );
+
+
+                meteorLayer.add(
+                    meteor
+                );
+
+
+                meteors.push(
+                    meteor
+                );
+            }
+        }
+
+
+        function resetMeteor(
+            meteor,
+            first
+        ) {
+
+            meteor.position.set(
+
+                -28 +
+                Math.random() * 56,
+
+                8 +
+                Math.random() * 25,
+
+                -30 +
+                Math.random() * 55
+            );
+
+
+            meteor.userData.speed =
+                0.06 +
+                Math.random() * 0.16;
+
+
+            meteor.userData.life =
+                first
+                    ? Math.random() * 180
+                    : 0;
+        }
+
+
+        /* =====================================================
+           MOUSE DOWN
+        ===================================================== */
+
+        function mouseDownHandler(
+            event
+        ) {
+
+            mouseDown = true;
+
+
+            lastX =
+                event.clientX;
+
+
+            lastY =
+                event.clientY;
+        }
+
+
+        /* =====================================================
+           MOUSE MOVE
+        ===================================================== */
+
+        function mouseMoveHandler(
+            event
+        ) {
+
+            if (!mouseDown) {
+                return;
+            }
+
+
+            const dx =
+                event.clientX -
+                lastX;
+
+
+            const dy =
+                event.clientY -
+                lastY;
+
+
+            velocityY +=
+                dx * 0.0009;
+
+
+            velocityX +=
+                dy * 0.0007;
+
+
+            lastX =
+                event.clientX;
+
+
+            lastY =
+                event.clientY;
+        }
+
+
+        /* =====================================================
+           MOUSE UP
+        ===================================================== */
+
+        function mouseUpHandler() {
+
+            mouseDown = false;
+        }
+
+
+        /* =====================================================
+           ZOOM
+        ===================================================== */
+
+        function wheelHandler(
+            event
+        ) {
+
+            distance +=
+                event.deltaY *
+                0.012;
+
+
+            distance =
+                THREE.MathUtils.clamp(
+                    distance,
+                    5,
+                    42
+                );
+
+
+            document
+                .getElementById(
+                    "distance"
+                )
+                .textContent =
+                distance.toFixed(
+                    1
+                );
+        }
+
+
+        /* =====================================================
+           BOTÕES
+        ===================================================== */
+
+        function setupButtons() {
+
+            const orion =
+                document.getElementById(
+                    "orion"
+                );
+
+
+            const ursa =
+                document.getElementById(
+                    "ursa"
+                );
+
+
+            const zodiac =
+                document.getElementById(
+                    "zodiac"
+                );
+
+
+            const galaxyButton =
+                document.getElementById(
+                    "toggleGalaxy"
+                );
+
+
+            const meteorButton =
+                document.getElementById(
+                    "toggleMeteor"
+                );
+
+
+            const autoButton =
+                document.getElementById(
+                    "auto"
+                );
+
+
+            const resetButton =
+                document.getElementById(
+                    "reset"
+                );
+
+
+            /* ===============================================
+               ÓRION
+            =============================================== */
+
+            orion.addEventListener(
+                "click",
+                function(event) {
+
+                    event.stopPropagation();
+
+
+                    targetX =
+                        0.10;
+
+
+                    targetY =
+                        -0.05;
+
+
+                    distance =
+                        9;
+
+
+                    document
+                        .getElementById(
+                            "target"
+                        )
+                        .textContent =
+                        "ÓRION";
+
+
+                    showConstellation(
+                        "★ ÓRION — TRÊS MARIAS"
+                    );
+                }
+            );
+
+
+            /* ===============================================
+               URSA
+            =============================================== */
+
+            ursa.addEventListener(
+                "click",
+                function(event) {
+
+                    event.stopPropagation();
+
+
+                    targetX =
+                        0.05;
+
+
+                    targetY =
+                        -0.42;
+
+
+                    distance =
+                        10;
+
+
+                    document
+                        .getElementById(
+                            "target"
+                        )
+                        .textContent =
+                        "URSA MAIOR";
+
+
+                    showConstellation(
+                        "★ URSA MAIOR — GRANDE CARRO"
+                    );
+                }
+            );
+
+
+            /* ===============================================
+               ZODÍACO
+            =============================================== */
+
+            zodiac.addEventListener(
+                "click",
+                function(event) {
+
+                    event.stopPropagation();
+
+
+                    targetX =
+                        0;
+
+
+                    targetY =
+                        0;
+
+
+                    distance =
+                        24;
+
+
+                    document
+                        .getElementById(
+                            "target"
+                        )
+                        .textContent =
+                        "ZODÍACO";
+
+
+                    showConstellation(
+                        "♈ CÍRCULO DO ZODÍACO"
+                    );
+                }
+            );
+
+
+            /* ===============================================
+               GALÁXIA
+            =============================================== */
+
+            galaxyButton.addEventListener(
+                "click",
+                function(event) {
+
+                    event.stopPropagation();
+
+
+                    galaxyVisible =
+                        !galaxyVisible;
+
+
+                    galaxy.visible =
+                        galaxyVisible;
+
+
+                    distantStars.visible =
+                        galaxyVisible;
+
+
+                    galaxyButton.classList.toggle(
+                        "active",
+                        galaxyVisible
+                    );
+                }
+            );
+
+
+            /* ===============================================
+               METEOROS
+            =============================================== */
+
+            meteorButton.addEventListener(
+                "click",
+                function(event) {
+
+                    event.stopPropagation();
+
+
+                    meteorVisible =
+                        !meteorVisible;
+
+
+                    meteorLayer.visible =
+                        meteorVisible;
+
+
+                    meteorButton.classList.toggle(
+                        "active",
+                        meteorVisible
+                    );
+                }
+            );
+
+
+            /* ===============================================
+               AUTO
+            =============================================== */
+
+            autoButton.addEventListener(
+                "click",
+                function(event) {
+
+                    event.stopPropagation();
+
+
+                    autoRotate =
+                        !autoRotate;
+
+
+                    autoButton.classList.toggle(
+                        "active",
+                        autoRotate
+                    );
+
+
+                    document
+                        .getElementById(
+                            "system"
+                        )
+                        .textContent =
+
+                        autoRotate
+                            ? "ROTAÇÃO AUTOMÁTICA"
+                            : "CONTROLE MANUAL";
+                }
+            );
+
+
+            /* ===============================================
+               RESET
+            =============================================== */
+
+            resetButton.addEventListener(
+                "click",
+                function(event) {
+
+                    event.stopPropagation();
+
+
+                    targetX =
+                        0.12;
+
+
+                    targetY =
+                        0;
+
+
+                    velocityX =
+                        0;
+
+
+                    velocityY =
+                        0;
+
+
+                    distance =
+                        13;
+
+
+                    document
+                        .getElementById(
+                            "target"
+                        )
+                        .textContent =
+                        "CÉU PROFUNDO";
+
+
+                    document
+                        .getElementById(
+                            "distance"
+                        )
+                        .textContent =
+                        "13.0";
+                }
+            );
+        }
+
+
+        /* =====================================================
+           AVISO
+        ===================================================== */
+
+        function showConstellation(
+            text
+        ) {
+
+            const element =
+                document.getElementById(
+                    "constellationInfo"
+                );
+
+
+            element.textContent =
+                text;
+
+
+            element.classList.add(
+                "show"
+            );
+
+
+            setTimeout(
+                function() {
+
+                    element.classList.remove(
+                        "show"
+                    );
+
+                },
+                1800
+            );
+        }
+
+
+        /* =====================================================
+           RESIZE
+        ===================================================== */
+
+        function resize() {
+
+            camera.aspect =
+                window.innerWidth /
+                window.innerHeight;
+
+
+            camera.updateProjectionMatrix();
+
+
+            renderer.setSize(
+                window.innerWidth,
+                window.innerHeight
+            );
+        }
+
+
+        /* =====================================================
+           ANIMAÇÃO
+        ===================================================== */
+
+        function animate() {
+
+            requestAnimationFrame(
+                animate
+            );
+
+
+            const time =
+                clock.getElapsedTime();
+
+
+            /* ===============================================
+               AUTO ROTAÇÃO
+            =============================================== */
+
+            if (
+                autoRotate &&
+                !mouseDown
+            ) {
+
+                velocityY +=
+                    0.000018;
+            }
+
+
+            /* ===============================================
+               INÉRCIA
+            =============================================== */
+
+            targetY +=
+                velocityY;
+
+
+            targetX +=
+                velocityX;
+
+
+            velocityX *=
+                0.92;
+
+
+            velocityY *=
+                0.94;
+
+
+            targetX =
+                THREE.MathUtils.clamp(
+                    targetX,
+                    -1.1,
+                    1.1
+                );
+
+
+            rotationX +=
+                (
+                    targetX -
+                    rotationX
+                ) * 0.055;
+
+
+            rotationY +=
+                (
+                    targetY -
+                    rotationY
+                ) * 0.055;
+
+
+            /* ===============================================
+               UNIVERSO
+            =============================================== */
+
+            universe.rotation.x =
+                rotationX;
+
+
+            universe.rotation.y =
+                rotationY;
+
+
+            /* ===============================================
+               GALÁXIA
+            =============================================== */
+
+            galaxy.rotation.y +=
+                0.00045;
+
+
+            galaxy.rotation.z +=
+                0.00008;
+
+
+            /* ===============================================
+               ESTRELAS DISTANTES
+            =============================================== */
+
+            distantStars.rotation.y +=
+                0.00008;
+
+
+            distantStars.rotation.x =
+                Math.sin(
+                    time * 0.08
+                ) * 0.025;
+
+
+            /* ===============================================
+               ESTRELAS PRINCIPAIS
+            =============================================== */
+
+            starObjects.forEach(
+                function(star,index) {
+
+                    const pulse =
+                        1 +
+                        Math.sin(
+                            time *
+                            (
+                                1.5 +
+                                index * 0.035
+                            ) +
+                            star.userData.phase
+                        ) * 0.10;
+
+
+                    star.scale.setScalar(
+                        pulse
+                    );
+
+
+                    star.rotation.z +=
+                        0.001;
+                }
+            );
+
+
+            /* ===============================================
+               NEBULOSAS
+            =============================================== */
+
+            nebulaLayer.children.forEach(
+                function(nebula) {
+
+                    nebula.rotation.y +=
+                        0.0003;
+
+
+                    const pulse =
+                        Math.sin(
+                            time * 0.35 +
+                            nebula.userData.phase
+                        );
+
+
+                    nebula.material.opacity =
+                        0.045 +
+                        pulse * 0.012;
+                }
+            );
+
+
+            /* ===============================================
+               PLANETAS
+            =============================================== */
+
+            planetLayer.children.forEach(
+                function(planet) {
+
+                    planet.rotation.y +=
+                        planet.userData.speed;
+
+
+                    planet.position.y =
+                        planet.userData.originalY +
+                        Math.sin(
+                            time * 0.45 +
+                            planet.position.x
+                        ) * 0.12;
+                }
+            );
+
+
+            /* ===============================================
+               ZODÍACO
+            =============================================== */
+
+            zodiacLayer.rotation.y +=
+                0.00065;
+
+
+            zodiacRing.rotation.z =
+                Math.sin(
+                    time * 0.1
+                ) * 0.02;
+
+
+            zodiacObjects.forEach(
+                function(object) {
+
+                    const pulse =
+                        1 +
+                        Math.sin(
+                            time * 1.3 +
+                            object.userData.phase
+                        ) * 0.07;
+
+
+                    object.scale.setScalar(
+                        pulse
+                    );
+                }
+            );
+
+
+            /* ===============================================
+               METEOROS
+            =============================================== */
+
+            meteors.forEach(
+                function(meteor) {
+
+                    meteor.position.x -=
+                        meteor.userData.speed;
+
+
+                    meteor.position.y -=
+                        meteor.userData.speed *
+                        0.5;
+
+
+                    meteor.userData.life++;
+
+
+                    if (
+
+                        meteor.position.x <
+                            -32 ||
+
+                        meteor.position.y <
+                            -15 ||
+
+                        meteor.userData.life >
+                            330
+
+                    ) {
+
+                        resetMeteor(
+                            meteor,
+                            false
+                        );
+                    }
+                }
+            );
+
+
+            /* ===============================================
+               CÂMERA
+            =============================================== */
+
+            camera.position.z +=
+                (
+                    distance -
+                    camera.position.z
+                ) * 0.055;
+
+
+            camera.position.y +=
+                (
+                    1 +
+                    rotationX * 1.3 -
+                    camera.position.y
+                ) * 0.025;
+
+
+            camera.lookAt(
+                0,
+                0,
+                0
+            );
+
+
+            /* ===============================================
+               STATUS
+            =============================================== */
+
+            document
+                .getElementById(
+                    "speed"
+                )
+                .textContent =
+
+                (
+                    Math.abs(
+                        velocityY
+                    ) * 1000 +
+                    0.35
+                ).toFixed(2);
+
+
+            document
+                .getElementById(
+                    "distance"
+                )
+                .textContent =
+
+                camera.position.z.toFixed(
+                    1
+                );
+
+
+            /* ===============================================
+               RENDER
+            =============================================== */
+
+            renderer.render(
+                scene,
+                camera
+            );
+        }
+
+
+        /* =====================================================
+           INICIAR
+        ===================================================== */
+
+        window.onload =
+            init;
+
+    </script>
+
+</body>
+
+</html> 
